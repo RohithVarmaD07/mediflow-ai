@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mediflow-ai:pipeline-event:1.0.0",
+  "title": "MediFlow pipeline event v1.0.0",
+  "description": "Proposed synthetic pipeline telemetry contract. Timestamps are UTC and evidence paths are run-relative. Semantic checks are required in addition to schema validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "run_id", "pipeline_id", "task_id", "sequence", "occurred_at", "status", "synthetic", "metrics", "quality", "evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "event_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "pipeline_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"},
+    "task_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "occurred_at": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "status": {"enum": ["started", "succeeded", "failed", "quarantined"]},
+    "synthetic": {"const": true},
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rows_read", "rows_written", "rows_rejected", "duration_ms"],
+      "properties": {
+        "rows_read": {"type": "integer", "minimum": 0},
+        "rows_written": {"type": "integer", "minimum": 0},
+        "rows_rejected": {"type": "integer", "minimum": 0},
+        "duration_ms": {"type": "integer", "minimum": 0}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks_total", "checks_failed"],
+      "properties": {
+        "checks_total": {"type": "integer", "minimum": 0},
+        "checks_failed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "retryable": {"type": "boolean"}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "sha256"],
+        "properties": {
+          "kind": {"enum": ["log", "quality_report", "manifest", "query_result"]},
+          "path": {"type": "string", "minLength": 1, "maxLength": 240, "pattern": "^[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+)*\\.[a-zA-Z0-9]+$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["failed", "quarantined"]}}},
+      "then": {"required": ["error"]},
+      "else": {"not": {"required": ["error"]}}
+    }
+  ]
+}

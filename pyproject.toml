@@ -1,0 +1,16 @@
+[project]
+name = "mediflow-ai"
+version = "0.1.0"
+description = "Reproducible synthetic healthcare pipeline with incremental analytics"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = ["duckdb==1.4.2", "pyarrow==21.0.0"]
+
+[tool.portfolio]
+phase = "phase-2"
+application_implemented = true
+dependency_resolution_verified = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
