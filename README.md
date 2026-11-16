@@ -46,7 +46,7 @@ To reproduce installation after approval, create a Python 3.13 environment and i
 
 This is a Windows, single-writer portfolio implementation. All patient information is synthetic. Analytical snapshots are rebuilt from incrementally maintained canonical state. No cloud execution, AI insight generation, clinical validation, compliance certification, or production-readiness claim is made. The original pipeline-event JSON Schema remains a future integration contract; Phase 2 events are local run-state evidence, not a claim of full contract conformance.
 
-R1 adds a fixed sequential controller and durable stage history. Monitoring services, scheduling, AWS integration, publication and deployment remain outside the implemented scope. The project remains an ordinary folder pending the approved copy-only separation strategy.
+R1 adds a fixed sequential controller and durable stage history. Monitoring services, scheduling, AWS integration, publication and deployment remain outside the implemented scope. The project is staged in the private [mediflow-ai repository](https://github.com/RohithVarmaD07/mediflow-ai); access requires repository permission. Public release and deployment require separate approval.
 
 ## Read execution history
 
